@@ -1,0 +1,10 @@
+{
+  "name": "leaves",
+  "version": "0.0.1",
+  "description": "Calculate paid leaves and vacations remaining in the payroll",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tiziano Pessa"
+}
