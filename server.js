@@ -1,5 +1,8 @@
-const app = require('express')();
-const routes = require('./routes/LeavesRoutes.js');
+const express = require('express');
+const Router = require('./routes/RestRouter.js');
+
+var app = express();
+var routes = new Router(express, ['/leaves']).routes;
 
 app.use('/', routes);
 
