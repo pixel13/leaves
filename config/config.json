@@ -1,0 +1,9 @@
+{
+  "paths": ["/leaves", "/payrolls"],
+  "db": {
+    "host": "localhost",
+    "user": "root",
+    "password": "",
+    "database": "leaves"
+  }
+}

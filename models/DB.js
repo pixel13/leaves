@@ -1,11 +1,33 @@
-const mysql = require('mysql');
+/**
+ * Simple object-oriented interface for a MySQL database
+ *
+ * It is a wrapper around npm mysql module
+ *
+ * The 4 fundamental queries can be done in this way:
+ * - INSERT: DB.table(<NAME>).insert(<OBJECT>)
+ * - UPDATE: DB.table(<NAME>).update(<OBJECT>)[.where(<CONDITIONS>)]
+ * - SELECT: DB.table(<NAME>).select([<FIELDS>])[.where(<CONDITIONS>)][.orderBy(<CRITERIA>)|.reverseOrderBy(<CRITERIA>)]
+ * - DELETE: DB.table(<NAME>).delete()[.where(<CONDITIONS>)]
+ *
+ * To get the querystring corresponding to the object, just append to the query the method: getQuery()
+ * The execution of the query is asyncronous, so to execute one of the above, it must be appended the method: then(<CALLBACK>)
+ * The callback should take one parameter that will be filled:
+ * - With the id of the inserted row, if it's an INSERT statement
+ * - With the number of changed rows if it's an UPDATE statement
+ * - With the resultset if it's a SELECT statement
+ * - With the number of deleted rows if it's a DELETE statement
+ *
+ * Some more note:
+ * - Both the <FIELDS> and <CRITERIA> can be a single string or multiple strings; in any case it will be created a comma separated list
+ * - The <FIELDS> in the select() method is optional, if not specified it will be selected everything (SELECT *)
+ * - In this simplified version, the <CONDITIONS> to build the WHERE clause can only be built using the = and AND operators, starting from an object:
+ *      .where({field1: value1, field2: value2})    is equal to     WHERE field1='value1' AND field2='value2'
+ */
 
-var connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'leaves'
-});
+const mysql = require('mysql');
+const config = require('../config/config.json');
+
+var connection = mysql.createConnection(config.db);
 
 class Command
 {
@@ -43,7 +65,10 @@ class Command
 
         connection.query(this.getQuery(), (err, rows, fields) => {
 
-            if (err) throw err;
+            if (err) {
+                callback(err.message);
+                return;
+            }
 
             switch (command)
             {
@@ -213,11 +238,6 @@ class Table
         return new Command(this._statement);
     }
 }
-
-// SELECT <COSA> FROM <TABLE> WHERE <CONDITIONS> ORDER BY <ORDER>
-// INSERT INTO <TABLE>(<FIELDS>) VALUES(<VALUES>)
-// UPDATE <TABLE> SET <FIELD>=<VALUE>, ... WHERE <CONDITIONS>
-// DELETE FROM <TABLE> WHERE <CONDITIONS>
 
 class DB
 {

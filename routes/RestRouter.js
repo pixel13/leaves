@@ -4,10 +4,33 @@ class RestRouter
     {
         this.routes = express.Router();
 
+        this.routes.use(this._middlewareLogRequest);
+        this.routes.use(this._middlewareCheckBody);
+
         for (let path of paths)
         {
             this._addRoutesForPath(path);
         }
+    }
+
+    _middlewareLogRequest(req, res, next)
+    {
+        next();
+        console.log('Served: ' + req.method + ' on ' + req.originalUrl + ' (' + res.statusCode + ')');
+    }
+
+    _middlewareCheckBody(req, res, next)
+    {
+        if ((req.method !== 'PUT') && (req.method !== 'POST'))
+            return next();
+
+        if (req.get('Content-Type') !== 'application/json')
+            return res.status(400).send('Missing required header Content-Type: application/json');
+
+        if ((typeof req.body !== 'object') || (Object.keys(req.body).length === 0))
+            return res.status(406).send('A non-empty, valid JSON body is required');
+
+        next();
     }
 
     _addRoutesForPath(path)
@@ -30,7 +53,7 @@ class RestRouter
         var resource = path + obj.resource;
 
         console.log('Adding route from  ' + controllerName + '.' + method + '(): ' + obj.verb.toUpperCase() + ' on ' + resource);
-        this.routes[obj.verb](resource, controller[method]);
+        this.routes[obj.verb](resource, controller[method].bind(controller));
     }
 
     _processMethodName(method)
