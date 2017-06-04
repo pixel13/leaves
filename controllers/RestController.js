@@ -1,4 +1,4 @@
-const DB = require('../models/DB.js');
+const DB = require('../library/DB.js');
 
 class RestController
 {
