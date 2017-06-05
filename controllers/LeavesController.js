@@ -9,7 +9,7 @@ class LeavesController extends RestController
 
     getAll(req, res)
     {
-        super.getAll(req, res, 'year', 'month', 'day');
+        super.getAll(req, res, 'id');
     }
 
     get(req, res)

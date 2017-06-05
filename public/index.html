@@ -11,13 +11,128 @@
 </head>
 <body>
 	<div id="title">Ferie e permessi</div>
-	<div id="highlight"></div>
+	<div id="highlight">
+		<div><label for="currentVacations">Ferie attuali:</label><span id="currentVacations"></span></div>
+		<div><label for="currentLeaves">Permessi attuali:</label><span id="currentLeaves"></span></div>
+	</div>
 	<div class="separator"></div>
 	<div id="main">
 		<div id="monthSelector">
 			<select id="month"></select>
 		</div>
+		<div id="monthData">
+			<div id="monthTitle"></div>
+			<div>Ferie: <span id="monthVacations"></span></div>
+			<div>Permessi: <span id="monthLeaves"></span></div>
+		</div>
 	</div>
-	<div id="sidebar"></div>
+	<div id="sidebar">
+		<div id="newLeave">
+			<span class="error" id="wrongDateFormat">La data deve essere nel formato gg/mm/aaaa!</span>
+			<span class="error" id="zeroHours">Seleziona il numero di ore!</span>
+			<div>
+				<label for="date">Data (dd/mm/yyyy)</label>
+				<input type="text" size="10" id="date" />
+			</div>
+			<div>
+				<label for="hours">Ore</label>
+				<select id="hours">
+					<option value="0" selected="selected">--</option>
+					<option value="0.25">0:15</option>
+					<option value="0.5">0:30</option>
+					<option value="0.75">0:45</option>
+					<option value="1">1:00</option>
+					<option value="1.25">1:15</option>
+					<option value="1.5">1:30</option>
+					<option value="1.75">1:45</option>
+					<option value="2">2:00</option>
+					<option value="2.25">2:15</option>
+					<option value="2.5">2:30</option>
+					<option value="2.75">2:45</option>
+					<option value="3">3:00</option>
+					<option value="3.25">3:15</option>
+					<option value="3.5">3:30</option>
+					<option value="3.75">3:45</option>
+					<option value="4">4:00</option>
+					<option value="4.25">4:15</option>
+					<option value="4.5">4:30</option>
+					<option value="4.75">4:45</option>
+					<option value="5">5:00</option>
+					<option value="5.25">5:15</option>
+					<option value="5.5">5:30</option>
+					<option value="5.75">5:45</option>
+					<option value="6">6:00</option>
+					<option value="6.25">6:15</option>
+					<option value="6.5">6:30</option>
+					<option value="6.75">6:45</option>
+					<option value="7">7:00</option>
+					<option value="7.25">7:15</option>
+					<option value="7.5">7:30</option>
+					<option value="7.75">7:45</option>
+					<option value="8">8:00</option>
+				</select>
+			</div>
+			<div>
+				<label for="type">Tipo</label>
+				<select id="type">
+					<option value="1" selected="selected">ferie</option>
+					<option value="0">permessi</option>
+				</select>
+			</div>
+			<div>
+				<label for="create">&nbsp;</label>
+				<button id="create">Aggiungi</button>
+			</div>
+			<div class="separator"></div>
+		</div>
+		<div id="lastInserted"><div>Ultime inserite:</div><ul></ul></div>
+	</div>
+	<script type="text/template" id="lastInsertedItem">
+		<%= (day < 9 ? '0' : '') + day %>/<%= (month < 9 ? '0' : '') + month %>/<%= (year < 9 ? '0' : '') + year %>
+		<%= hours %> ore (<% (vacation ? print('ferie') : print('permessi')) %>) -
+		[<a class="remove" href="#">Cancella</a>]
+	</script>
+	<script type="text/template" id="monthName">
+		<%
+			switch (month) {
+				case 1:
+					print('Gennaio');
+					break;
+				case 2:
+					print('Febbraio');
+					break;
+				case 3:
+					print('Marzo');
+					break;
+				case 4:
+					print('Aprile');
+					break;
+				case 5:
+					print('Maggio');
+					break;
+				case 6:
+					print('Giugno');
+					break;
+				case 7:
+					print('Luglio');
+					break;
+				case 8:
+					print('Agosto');
+					break;
+				case 9:
+					print('Settembre');
+					break;
+				case 10:
+					print('Ottobre');
+					break;
+				case 11:
+					print('Novembre');
+					break;
+				case 12:
+					print('Dicembre');
+					break;
+			}
+		%>
+	</script>
 </body>
 </html>
