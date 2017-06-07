@@ -19,11 +19,14 @@
 	<div id="main">
 		<div id="monthSelector">
 			<select id="month"></select>
+			<div id="generateNextMonth"><a href="#">Clicca qui</a> per calcolare i dati del mese di <span id="nextMonth"></span></div>
 		</div>
 		<div id="monthData">
 			<div id="monthTitle"></div>
-			<div>Ferie: <span id="monthVacations"></span></div>
-			<div>Permessi: <span id="monthLeaves"></span></div>
+			<div>Ferie godute: <span id="usedVacations"></span></div>
+			<div>Ferie residue: <span id="monthVacations"></span></div>
+			<div>Permessi goduti: <span id="usedLeaves"></span></div>
+			<div>Permessi residui: <span id="monthLeaves"></span></div>
 		</div>
 	</div>
 	<div id="sidebar">
@@ -88,8 +91,8 @@
 		<div id="lastInserted"><div>Ultime inserite:</div><ul></ul></div>
 	</div>
 	<script type="text/template" id="lastInsertedItem">
-		<%= (day < 9 ? '0' : '') + day %>/<%= (month < 9 ? '0' : '') + month %>/<%= (year < 9 ? '0' : '') + year %>
-		<%= hours %> ore (<% (vacation ? print('ferie') : print('permessi')) %>) -
+		<%= (day < 10 ? '0' : '') + day %>/<%= (month < 10 ? '0' : '') + month %>/<%= year %>
+		<%= hours %> ore (<% (vacation == 1 ? print('ferie') : print('permessi')) %>) -
 		[<a class="remove" href="#">Cancella</a>]
 	</script>
 	<script type="text/template" id="monthName">

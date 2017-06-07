@@ -11,6 +11,11 @@ class RestController
     {
         var statement = DB.table(this.table).select();
 
+        if (Object.keys(req.query).length > 0)
+        {
+            statement.where(req.query);
+        }
+
         if (orderBy.length > 0)
             statement.orderBy(orderBy.join(','));
 
@@ -21,7 +26,7 @@ class RestController
 
     get(req, res)
     {
-        DB.table(this.table).select().where({id: req.params.id}).then(rows => {
+        DB.table(this.table).select().where({id: req.param.id}).then(rows => {
             if (rows.length === 0)
             {
                 res.sendStatus(404);
