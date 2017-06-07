@@ -273,29 +273,78 @@ var SidebarView = Backbone.View.extend({
 var HighlightView = Backbone.View.extend({
     el: '#highlight',
 
-    initialize: function(options) {
-        this.leaveCollection = options.leaveCollection;
-        this.payrollCollection = options.payrollCollection;
-
+    initialize: function() {
         this.vacations = 0;
         this.leaves = 0;
 
-        this.listenTo(this.payrollCollection, 'reset', this.update);
-
+        this.listenTo(this.collection, 'reset', this.update);
         this.render();
     },
 
     update: function() {
-        var lastMonth = this.payrollCollection.at(-1);
+        var lastMonth = this.collection.at(-1);
         this.vacations = lastMonth.get('vacations');
         this.leaves = lastMonth.get('leaves');
-
+        this.adjustCurrentMonthValues();
         this.render();
     },
 
+    adjustCurrentMonthValues: function() {
+        var today = new Date();
+        var month = today.getMonth() + 1;
+        var year = today.getFullYear();
+        var previous = this.getPreviousMonth(month, year);
+
+        this.vacations += 14.67;
+        this.leaves += 8.67;
+
+        this.decreaseValuesForMonth(previous.month, previous.year);
+        this.decreaseValuesForMonth(month, year);
+    },
+
+    round: function (val) {
+        return Math.round(val * 100) / 100;
+    },
+
+    decreaseValuesForMonth: function(month, year) {
+        var resultset = [];
+
+        $.ajax({
+            url: '/api/leaves/?month=' + month + '&year=' + year,
+            async: false,
+            success: function(data) {
+                resultset = data;
+            }
+        });
+
+        for (let i = 0; i < resultset.length; i++)
+        {
+            if (resultset[i].vacation)
+                this.vacations -= resultset[i].hours;
+            else
+                this.leaves -= resultset[i].hours;
+        }
+    },
+
+    getPreviousMonth: function(month, year) {
+        var previousMonth = month - 1;
+        var previousYear = year;
+
+        if (previousMonth == 0)
+        {
+            previousMonth = 12;
+            previousYear--;
+        }
+
+        return {
+            month: previousMonth,
+            year: previousYear
+        }
+    },
+
     render: function() {
-        this.$el.find('#currentLeaves').text(this.leaves);
-        this.$el.find('#currentVacations').text(this.vacations);
+        this.$el.find('#currentLeaves').text(this.round(this.leaves));
+        this.$el.find('#currentVacations').text(this.round(this.vacations));
     }
 });
 
@@ -304,8 +353,7 @@ $(document).ready(function () {
     var payrollCollection = new PayrollCollection();
 
     var highlight = new HighlightView({
-        leaveCollection: leaveCollection,
-        payrollCollection: payrollCollection
+        collection: payrollCollection
     });
 
     var main = new MainView({
